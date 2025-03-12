@@ -67,6 +67,7 @@ npm run develop
   + <ins>Media Library</ins> - Settings for your media library
   + <ins>Roles</ins> - Under Administration Panel, you can find this menu to add a type of role that can be assign to user for different access in content management.
   + <ins>Users</ins> - Show List of Users and also can send invite access to a users, edit details and role of a user
+  + <ins>Users & Permissions</ins> - The Users & Permissions plugin is a core feature in Strapi that provides authentication and authorization capabilities for your application. It provide menus like user, role, providers etc. 
   There is more different menu to add webhooks, email plugin, email templates, advance settings for more configurations.
     <img align="center" width="1792" alt="Screenshot 2025-03-12 at 10 47 59 PM" src="https://github.com/user-attachments/assets/6e4503a5-52d4-420d-9cf9-5926810c9a9b" />
 > [!warning]
