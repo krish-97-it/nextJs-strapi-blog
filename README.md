@@ -74,5 +74,21 @@ npm run develop
 > Its better to use default seetings always and manage menus as per need carefully
 
 
+## 4. Frontend Setup (Next Js)
+>  Inside Root Folder create a folder and named as frontend. run this command inside this created folder : <br>
+```diff
+npx create-next-app@latest .
+```
+   <img align="center" width="1792" alt="Screenshot 2025-03-13 at 8 48 02 AM" src="https://github.com/user-attachments/assets/e28d2cd8-170d-49fd-b1d4-4a187df16f5e" /><br>
+> [!TIP]
+> You can use shadcn/ui dependecies in your project to create and design components like buttons, accordion etc. To install run inside frontend folder -
+> ``` npx shadcn@latest init ``` <br>
+> For more informations, Visit - https://ui.shadcn.com/docs/installation/next & https://ui.shadcn.com/docs/components/
+> <img width="924" alt="Screenshot 2025-03-13 at 9 11 42 AM" src="https://github.com/user-attachments/assets/2d78826e-5bb0-4688-b91d-a5dc29a2ed7f" />
+
+
+
+
+
 
 
