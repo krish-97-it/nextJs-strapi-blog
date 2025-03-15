@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import "../styles/header.css";
+import "../styles/blog-card.css";
 import Icon from "../assests/logo.webp";
 import Image from "next/image";
 
