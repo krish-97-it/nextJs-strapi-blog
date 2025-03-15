@@ -1,11 +1,12 @@
 import React from "react";
-// const data = await fetch("")
+import BlogList from "@/template-parts/blog-list";
+
 export default function Home() {
   return (
     <main>
-		<div className="container bg-light" style={{ marginTop: '5rem' }}>
-			HOMEPAGE
-		</div>
+        <div className="main-content">
+            <BlogList/>
+        </div>
     </main>
   );
 }
