@@ -2,6 +2,146 @@
 It is a Blog / personal portfolio website using Next Js and Strapi
 
 
+##  🚀 Routing in Next.js
++ Next.js has two types of routing systems:
++ Page Router (pages/ folder - Traditional routing)
++ App Router (app/ folder - New in Next.js 13+, uses React Server Components)
+
+### Let’s go step by step.
+
+1️⃣ <ins>Page Router (Traditional pages/ Routing)</ins> - 
++ Next.js automatically maps files inside the pages/ folder to routes. No need to define routes manually (like in React Router).
++ Basic Example<br>
+  📁 pages/index.js → Available at /
+  ```
+      export default function Home() {
+         return <h1>Home Page</h1>;
+      }
+  ```
+
+  📁 pages/about.js → Available at /about
+  ```
+      export default function About() {
+         return <h1>About Page</h1>;
+      }
+  ```
++ <ins>✅ Go to http://localhost:3000/about to see the About page.</ins>
+
+2️⃣ <ins>App Router (New app/ Routing - Next.js 13+)</ins>
++ Uses React Server Components by default.
++ Follows a nested folder structure.
++ Basic Example<br>
+  📁 app/page.js → Available at /
+  ```
+      export default function Home() {
+         return <h1>Home Page (App Router)</h1>;
+      }
+  ```
+  
+  📁 app/about/page.js → Available at /about
+  ```
+      export default function About() {
+         return <h1>About Page (App Router)</h1>;
+      }
+  ```
+
++ ✅ Go to http://localhost:3000/about and see the new structure in action.
+
+3️⃣ <ins>Nested Routing (Two-Level Routing)</ins>
++ In the App Router (app/ folder), you can create nested routes using subfolders.
++ Example: Blog with Nested Routing<br>
+  📁 app/<br>
+   │── page.js # Home (`/`)<br>
+   │── about/<br>
+   │ ├── page.js # About Page (`/about`)<br>
+   │── blog/<br>
+   │ ├── page.js # Blog List (`/blog`)<br>
+   │ ├── post/<br>
+   │ ├── page.js # Blog Post (`/blog/post`)<br>
+  
+ 📁 app/blog/page.js
+ ```
+      export default function Blog() {
+         return <h1>Blog Page</h1>;
+      }
+ ```
+
+ 📁 app/blog/post/page.js
+ ```
+      export default function Post() {
+         return <h1>Single Blog Post</h1>;
+      }
+ ```
+
++ ✅ URL Paths Generated<br>
+  /blog → Blog List
+  /blog/post → Single Blog Post
+
+
+
+## 🚀 Dynamic Routing in Next.js 🚀
+Dynamic routing allows us to create routes with dynamic parameters like /blog/:id. Next.js supports dynamic routes in both the Page Router (pages/) and App Router (app/).
+
+1️⃣ Dynamic Routes in Page Router (pages/ folder)
++ In the pages/ directory, we use square brackets [ ] to define dynamic segments.
++ Example: Blog Post with Dynamic ID<br>
+  📁 pages/<br>
+   │── index.js # Home Page (`/`)<br>
+   │── blog/<br>
+   │ ├── index.js # Blog List (`/blog`)<br>
+   │ ├── [id].js # Dynamic Blog Post (`/blog/:id`)<br>
+  ```
+      import { useRouter } from "next/router";
+      export default function BlogPost() {
+         const router = useRouter();
+         const { id } = router.query; // Get dynamic ID
+         return <h1>Blog Post ID: {id}</h1>;
+      }
+  ```
++ ✅ Try visiting: http://localhost:3000/blog/123
+  🔹 Output: "Blog Post ID: 123"
+
+
+2️⃣ Dynamic Routes in App Router (app/ folder)
++ In Next.js 13+ (App Router), we use square brackets [ ] as a folder name.
++ Example: Dynamic Blog Post<br>
+  📁 app/<br>
+      │── page.js # Home Page (`/`)<br>
+      │── blog/<br>
+      │ ├── page.js # Blog List (`/blog`)<br>
+      │ ├── [id]/<br>
+      │ ├── page.js # Dynamic Blog Post (`/blog/:id`)<br>
+
+  📁 app/blog/[id]/page.js
+  ```
+      export default function BlogPost({ params }) {
+       return <h1>Blog Post ID: {params.id}</h1>;
+      }
+  ```
+
+
++ ✅ Try visiting: http://localhost:3000/blog/123
+  🔹 Output: "Blog Post ID: 123"
+
+3️⃣ Catch-All Routes (...slug)
++ Sometimes, we need to handle multiple dynamic segments like /docs/nextjs/setup.
++ Example: Handling Multiple Dynamic Segments<br>
+  📁 pages/<br>
+      │── docs/<br>
+      │ ├── [...slug].js # Matches `/docs/anything/here`<br>
+
+  📁 pages/docs/[...slug].js
+  ```
+      import { useRouter } from "next/router";
+      export default function Docs() {
+         const router = useRouter();
+         const { slug } = router.query;
+         
+         return <h1>Docs: {slug?.join(" / ")}</h1>;
+      }
+  ```
+
+
 ## 🌍 Client-Side Rendering (CSR)
    In Client-Side Rendering, the page is rendered in the browser using JavaScript. The initial page load is minimal, and then Next.js fetches data after the page loads.<br>
 
