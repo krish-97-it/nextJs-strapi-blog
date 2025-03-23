@@ -3,15 +3,15 @@ It is a Blog / personal portfolio website using Next Js and Strapi
 
 
 ## 🌍 Client-Side Rendering (CSR)
-   In Client-Side Rendering, the page is rendered in the browser using JavaScript. The initial page load is minimal, and then Next.js fetches data after the page loads.
+   In Client-Side Rendering, the page is rendered in the browser using JavaScript. The initial page load is minimal, and then Next.js fetches data after the page loads.<br>
 
-   ✅ When to Use CSR ?
-      + When SEO is not a priority (e.g., dashboards, user profiles).
-      + When data is highly dynamic and frequently changes (e.g., real-time apps).
-      + When you want to reduce server load.
+   ✅ <ins>When to Use CSR ?</ins>
+   + When SEO is not a priority (e.g., dashboards, user profiles).
+   + When data is highly dynamic and frequently changes (e.g., real-time apps).
+   + When you want to reduce server load.
 
-   🛠 How to Implement CSR
-   + Use the useEffect hook to fetch data after the component mounts. <br>
+   🛠 <ins>How to Implement CSR</ins>
+   + Use the useEffect hook to fetch data after the component mounts.
       ```
          import { useState, useEffect } from "react";
          export default function ContactUs() {
@@ -37,22 +37,21 @@ It is a Blog / personal portfolio website using Next Js and Strapi
          }
       ```
 
-   📌 Key Notes:
+   📌 <ins>Key Notes:</ins>
    + Data is fetched after the page is loaded.
    + No SEO benefits since search engines see an empty page at first.
-   + Great for interactive apps where content frequently updates.
+   + Great for interactive apps where content frequently updates.<br>
 
-   ⚡ Server-Side Rendering (SSR)
-     In Server-Side Rendering, Next.js pre-renders the page on the server for every request. This ensures that the client receives a fully rendered HTML page with data.
+## ⚡ Server-Side Rendering (SSR)
+   In Server-Side Rendering, Next.js pre-renders the page on the server for every request. This ensures that the client receives a fully rendered HTML page with data.
 
-   ✅ When to Use SSR ?
-   + When SEO is important (e.g., landing pages, blogs, e-commerce).
-   + When the content needs to be fresh on every request.
-   + When you want to avoid exposing API keys in the frontend.
+   ✅ <ins>When to Use SSR ?</ins>
+      + When SEO is important (e.g., landing pages, blogs, e-commerce).
+      + When the content needs to be fresh on every request.
+      + When you want to avoid exposing API keys in the frontend.
 
-   🛠 How to Implement SSR
-   + Use getServerSideProps to fetch data at request time.<br>
-
+   🛠 <ins>How to Implement SSR</ins><br>
+   + Use getServerSideProps to fetch data at request time.
       ```
          export async function getServerSideProps() {
            const res = await fetch("https://your-wordpress-site.com/graphql", {
@@ -78,12 +77,12 @@ It is a Blog / personal portfolio website using Next Js and Strapi
            );
          }
       ```
-📌 Key Notes:
-+ Better for SEO because the page is fully rendered on the server.
-+ Slower than CSR since it renders on every request.
-+ Good for frequently updated content (e.g., news, logged-in user content).
+   📌 <ins>Key Notes:</ins>
+   + Better for SEO because the page is fully rendered on the server.
+   + Slower than CSR since it renders on every request.
+   + Good for frequently updated content (e.g., news, logged-in user content).
 
-🎯 Key Differences: CSR vs. SSR
+## 🎯 Key Differences: CSR vs. SSR
 <img width="661" alt="Screenshot 2025-03-23 at 1 21 22 PM" src="https://github.com/user-attachments/assets/915db67d-94fe-4c57-baff-2bd7f1e4b540" />
 
 
