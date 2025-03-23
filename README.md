@@ -141,8 +141,8 @@ Dynamic routing allows us to create routes with dynamic parameters like /blog/:i
       }
   ```
 
-
-## 🌍 Client-Side Rendering (CSR)
+## How to render content [CSR and SSR]
+## 🌍 Client-Side Rendering (CSR) 🌍
 + In Client-Side Rendering, the page is rendered in the browser using JavaScript. The initial page load is minimal, and then Next.js fetches data after the page loads.<br>
 + <ins>How it Works:</ins>
   + The page loads with minimal HTML.
@@ -237,7 +237,110 @@ Dynamic routing allows us to create routes with dynamic parameters like /blog/:i
 <img width="661" alt="Screenshot 2025-03-23 at 1 21 22 PM" src="https://github.com/user-attachments/assets/915db67d-94fe-4c57-baff-2bd7f1e4b540" />
 
 
-## 1. Development Process
+## In case you are using app router for nextjs with strapi
++ In Next.js App Router, the approach to data fetching changes because it uses React Server Components (RSC) and Server Actions instead of getStaticProps and getServerSideProps. Here's how it works with Strapi:
++ <ins>Equivalent of getStaticProps (Static Data Fetching)</ins>
+  + Use fetch() inside a Server Component (e.g., directly in a page or layout).
+  + The data is fetched at build time (or revalidated with ISR).
+  + Example in App Router (app/blog/page.js)
+    ```
+      export default async function Blog() {
+        const res = await fetch("https://your-strapi-site.com/api/posts", {
+          next: { revalidate: 10 }, // ISR: Re-fetch data every 10 seconds
+        });
+        const data = await res.json();
+      
+        return (
+          <div>
+            <h1>Blog Posts</h1>
+            {data.data.map((post) => (
+              <div key={post.id}>
+                <h2>{post.attributes.title}</h2>
+                <p>{post.attributes.content}</p>
+              </div>
+            ))}
+          </div>
+        );
+      }
+    ```
+  + 🔹 Key Points:
+    + Uses fetch() inside a Server Component (no need for getStaticProps).
+    + The { next: { revalidate: 10 } } option enables ISR (Incremental Static Regeneration).
+    + Best for static pages like blogs.
+
++ <ins>Equivalent of getServerSideProps (Dynamic Data Fetching)</ins>
+  + Use fetch() inside a Server Component but without ISR.
+  + The data is fetched on every request, similar to SSR.
+  + Example in App Router (app/blog/page.js)
+    ```
+      export default async function Blog() {
+        const res = await fetch("https://your-strapi-site.com/api/posts", {
+          cache: "no-store", // Fetch fresh data every time
+        });
+        const data = await res.json();
+      
+        return (
+          <div>
+            <h1>Blog Posts</h1>
+            {data.data.map((post) => (
+              <div key={post.id}>
+                <h2>{post.attributes.title}</h2>
+                <p>{post.attributes.content}</p>
+              </div>
+            ))}
+          </div>
+        );
+      }
+    ```
+  + 🔹 Key Points:
+    + Uses fetch() with cache: "no-store" (disables caching, like SSR).
+    + Ensures fresh data on every request.
+    + Best for authenticated pages, dashboards, or real-time data.
+
++ <ins>Equivalent of useQuery (Client-Side Rendering - CSR)</ins>
+  + Use React Query or SWR inside a Client Component.
+  + Works like useQuery in the Page Router.
+  + Example using useQuery in a Client Component
+    ```
+      "use client"; // Must be a Client Component
+      
+      import { useQuery } from "@tanstack/react-query";
+      
+      const fetchPosts = async () => {
+        const res = await fetch("https://your-strapi-site.com/api/posts");
+        return res.json();
+      };
+      
+      export default function Blog() {
+        const { data, error, isLoading } = useQuery(["posts"], fetchPosts);
+      
+        if (isLoading) return <p>Loading...</p>;
+        if (error) return <p>Error loading data</p>;
+      
+        return (
+          <div>
+            <h1>Blog Posts</h1>
+            {data.data.map((post) => (
+              <div key={post.id}>
+                <h2>{post.attributes.title}</h2>
+                <p>{post.attributes.content}</p>
+              </div>
+            ))}
+          </div>
+        );
+      }
+    ```
+  + 🔹 Key Points:
+    + Must be inside a Client Component ("use client").
+    + Uses useQuery() to fetch data after page load.
+    + Best for real-time updates, user dashboards, and dynamic content.
++ Comparison of Data Fetching in App Router
+  <img width="705" alt="Screenshot 2025-03-23 at 7 59 35 PM" src="https://github.com/user-attachments/assets/ca7556e4-6618-493d-bfa6-78961bbf029f" /><br>
+
+  
+
+
+## 1. Development Process Of the Project
 > Create Strapi Project inside Root Folder run this command : <br>
 ```diff
 npx create-strapi-app@latest strapi dashboard
