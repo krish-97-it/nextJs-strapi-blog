@@ -143,84 +143,95 @@ Dynamic routing allows us to create routes with dynamic parameters like /blog/:i
 
 
 ## 🌍 Client-Side Rendering (CSR)
-   In Client-Side Rendering, the page is rendered in the browser using JavaScript. The initial page load is minimal, and then Next.js fetches data after the page loads.<br>
++ In Client-Side Rendering, the page is rendered in the browser using JavaScript. The initial page load is minimal, and then Next.js fetches data after the page loads.<br>
++ <ins>How it Works:</ins>
+  + The page loads with minimal HTML.
+  + Next.js fetches data from Strapi on the client-side using useEffect() or React Query.
+  + The user sees a loading state until the data is fetched.
++ When to Use CSR:
+  + ✅ When SEO is not critical (e.g., user dashboards, admin panels).
+  + ✅ When the data is frequently changing (e.g., real-time updates, user-specific content).
+  + ✅ When reducing server load is important (shifts processing to the client).
 
-   ✅ <ins>When to Use CSR ?</ins>
-   + When SEO is not a priority (e.g., dashboards, user profiles).
-   + When data is highly dynamic and frequently changes (e.g., real-time apps).
-   + When you want to reduce server load.
-
-   🛠 <ins>How to Implement CSR</ins>
-   + Use the useEffect hook to fetch data after the component mounts.
-      ```
-         import { useState, useEffect } from "react";
-         export default function ContactUs() {
-           const [data, setData] = useState(null);
-           useEffect(() => {
-             fetch("https://your-wordpress-site.com/graphql", {
-               method: "POST",
-               headers: { "Content-Type": "application/json" },
-               body: JSON.stringify({
-                 query: `{ pageBy(uri: "contact-us") { title content } }`,
-               }),
-             })
-               .then((res) => res.json())
-               .then((result) => setData(result.data.pageBy));
-           }, []);
-           if (!data) return <p>Loading...</p>;
-           return (
-             <div>
-               <h1>{data.title}</h1>
-               <div dangerouslySetInnerHTML={{ __html: data.content }} />
-             </div>
-           );
-         }
-      ```
-
-   📌 <ins>Key Notes:</ins>
-   + Data is fetched after the page is loaded.
-   + No SEO benefits since search engines see an empty page at first.
-   + Great for interactive apps where content frequently updates.<br>
++ 🛠 <ins>How to Implement CSR</ins>
+  + Use the useEffect hook to fetch data after the component mounts.
+    ```
+      import { useEffect, useState } from "react";
+      export default function Blog() {
+        const [posts, setPosts] = useState([]);
+        const [loading, setLoading] = useState(true);
+      
+        useEffect(() => {
+          fetch("http://localhost:1337/api/posts")
+            .then((res) => res.json())
+            .then((data) => {
+              setPosts(data.data);
+              setLoading(false);
+            });
+        }, []);
+      
+        if (loading) return <p>Loading...</p>;
+      
+        return (
+          <div>
+            <h1>Blog Posts</h1>
+            {posts.map((post) => (
+              <div key={post.id}>
+                <h2>{post.attributes.title}</h2>
+                <p>{post.attributes.content}</p>
+              </div>
+            ))}
+          </div>
+        );
+      }
+    ```
++ 📌 <ins>Key Notes:</ins>
+  + Data is fetched after the page is loaded.
+  + No SEO benefits since search engines see an empty page at first.
+  + Great for interactive apps where content frequently updates.<br>
 
 ## ⚡ Server-Side Rendering (SSR)
-   In Server-Side Rendering, Next.js pre-renders the page on the server for every request. This ensures that the client receives a fully rendered HTML page with data.
++ In Server-Side Rendering, Next.js pre-renders the page on the server for every request. This ensures that the client receives a fully rendered HTML page with data.
++ <ins>How it Works:</ins>
+  + The page is pre-rendered on the server before being sent to the browser.
+  + Data is fetched on every request using getServerSideProps().
+  + SEO is better because the full HTML is sent to the browser.
++ <ins>When to Use SSR ?</ins>
+  + ✅ When SEO is important (e.g., landing pages, blogs, e-commerce).
+  + ✅ When the content needs to be fresh on every request.
+  + ✅ When you want to avoid exposing API keys in the frontend.
+  + ✅ When you need to handle authentication before rendering a page.
 
-   ✅ <ins>When to Use SSR ?</ins>
-      + When SEO is important (e.g., landing pages, blogs, e-commerce).
-      + When the content needs to be fresh on every request.
-      + When you want to avoid exposing API keys in the frontend.
-
-   🛠 <ins>How to Implement SSR</ins><br>
-   + Use getServerSideProps to fetch data at request time.
-      ```
-         export async function getServerSideProps() {
-           const res = await fetch("https://your-wordpress-site.com/graphql", {
-             method: "POST",
-             headers: { "Content-Type": "application/json" },
-             body: JSON.stringify({
-               query: `{ pageBy(uri: "contact-us") { title content } }`,
-             }),
-           });
-           const { data } = await res.json();
-           return {
-             props: {
-               page: data.pageBy,
-             },
-           };
-         }
-         export default function ContactUs({ page }) {
-           return (
-             <div>
-               <h1>{page.title}</h1>
-               <div dangerouslySetInnerHTML={{ __html: page.content }} />
-             </div>
-           );
-         }
-      ```
-   📌 <ins>Key Notes:</ins>
-   + Better for SEO because the page is fully rendered on the server.
-   + Slower than CSR since it renders on every request.
-   + Good for frequently updated content (e.g., news, logged-in user content).
++ 🛠 <ins>How to Implement SSR</ins><br>
+  + Use getServerSideProps to fetch data at request time.
+    ```
+       export async function getServerSideProps() {
+          const res = await fetch("http://localhost:1337/api/posts");
+          const data = await res.json();
+        
+          return {
+            props: { posts: data.data }, 
+          };
+       }
+      
+       export default function Blog({ posts }) {
+          return (
+            <div>
+              <h1>Blog Posts</h1>
+              {posts.map((post) => (
+                <div key={post.id}>
+                  <h2>{post.attributes.title}</h2>
+                  <p>{post.attributes.content}</p>
+                </div>
+              ))}
+            </div>
+          );
+       }
+    ```
++ 📌 <ins>Key Notes:</ins>
+  + Better for SEO because the page is fully rendered on the server.
+  + Slower than CSR since it renders on every request.
+  + Good for frequently updated content (e.g., news, logged-in user content).
 
 ## 🎯 Key Differences: CSR vs. SSR
 <img width="661" alt="Screenshot 2025-03-23 at 1 21 22 PM" src="https://github.com/user-attachments/assets/915db67d-94fe-4c57-baff-2bd7f1e4b540" />
