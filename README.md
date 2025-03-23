@@ -2,6 +2,91 @@
 It is a Blog / personal portfolio website using Next Js and Strapi
 
 
+## 🌍 Client-Side Rendering (CSR)
+   In Client-Side Rendering, the page is rendered in the browser using JavaScript. The initial page load is minimal, and then Next.js fetches data after the page loads.
+
+   ✅ When to Use CSR ?
+      + When SEO is not a priority (e.g., dashboards, user profiles).
+      + When data is highly dynamic and frequently changes (e.g., real-time apps).
+      + When you want to reduce server load.
+
+   🛠 How to Implement CSR
+   + Use the useEffect hook to fetch data after the component mounts. <br>
+      ```
+         import { useState, useEffect } from "react";
+         export default function ContactUs() {
+           const [data, setData] = useState(null);
+           useEffect(() => {
+             fetch("https://your-wordpress-site.com/graphql", {
+               method: "POST",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify({
+                 query: `{ pageBy(uri: "contact-us") { title content } }`,
+               }),
+             })
+               .then((res) => res.json())
+               .then((result) => setData(result.data.pageBy));
+           }, []);
+           if (!data) return <p>Loading...</p>;
+           return (
+             <div>
+               <h1>{data.title}</h1>
+               <div dangerouslySetInnerHTML={{ __html: data.content }} />
+             </div>
+           );
+         }
+      ```
+
+   📌 Key Notes:
+   + Data is fetched after the page is loaded.
+   + No SEO benefits since search engines see an empty page at first.
+   + Great for interactive apps where content frequently updates.
+
+   ⚡ Server-Side Rendering (SSR)
+     In Server-Side Rendering, Next.js pre-renders the page on the server for every request. This ensures that the client receives a fully rendered HTML page with data.
+
+   ✅ When to Use SSR ?
+   + When SEO is important (e.g., landing pages, blogs, e-commerce).
+   + When the content needs to be fresh on every request.
+   + When you want to avoid exposing API keys in the frontend.
+
+   🛠 How to Implement SSR
+   + Use getServerSideProps to fetch data at request time.<br>
+
+      ```
+         export async function getServerSideProps() {
+           const res = await fetch("https://your-wordpress-site.com/graphql", {
+             method: "POST",
+             headers: { "Content-Type": "application/json" },
+             body: JSON.stringify({
+               query: `{ pageBy(uri: "contact-us") { title content } }`,
+             }),
+           });
+           const { data } = await res.json();
+           return {
+             props: {
+               page: data.pageBy,
+             },
+           };
+         }
+         export default function ContactUs({ page }) {
+           return (
+             <div>
+               <h1>{page.title}</h1>
+               <div dangerouslySetInnerHTML={{ __html: page.content }} />
+             </div>
+           );
+         }
+      ```
+📌 Key Notes:
++ Better for SEO because the page is fully rendered on the server.
++ Slower than CSR since it renders on every request.
++ Good for frequently updated content (e.g., news, logged-in user content).
+
+🎯 Key Differences: CSR vs. SSR
+<img width="661" alt="Screenshot 2025-03-23 at 1 21 22 PM" src="https://github.com/user-attachments/assets/915db67d-94fe-4c57-baff-2bd7f1e4b540" />
+
+
 ## 1. Development Process
 > Create Strapi Project inside Root Folder run this command : <br>
 ```diff
